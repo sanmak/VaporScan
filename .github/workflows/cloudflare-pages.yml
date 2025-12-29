@@ -75,7 +75,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .open-next/worker --project-name=vaporscan --branch=${{ github.head_ref || github.ref_name }}
+          command: pages deploy .open-next --project-name=vaporscan --branch=${{ github.head_ref || github.ref_name }}
 
       - name: Comment PR with deployment URL
         if: github.event_name == 'pull_request'

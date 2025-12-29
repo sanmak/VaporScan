@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![GitHub License](https://img.shields.io/github/license/sanketmakhija/vaporscan)](LICENSE)
+[![GitHub License](https://img.shields.io/github/license/sanmak/vaporscan)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/sanmak/VaporScan)](https://github.com/sanmak/VaporScan)
 [![CI](https://github.com/sanmak/VaporScan/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sanmak/VaporScan/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/sanmak/VaporScan/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/sanmak/VaporScan/security/code-scanning)
@@ -12,7 +12,6 @@
 
 ![Unit Tests](https://img.shields.io/badge/unit%20tests-144%20passing-brightgreen?logo=vitest)
 ![Integration Tests](https://img.shields.io/badge/integration%20tests-117%20passing-brightgreen?logo=vitest)
-![E2E Tests](https://img.shields.io/badge/e2e%20tests-58%20passing-brightgreen?logo=playwright)
 
 **A fast, privacy-first, client-side SEO auditing tool that detects orphaned pages, broken links, and generates comprehensive site health reports.**
 
@@ -248,8 +247,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 VaporScan follows industry-standard testing practices with a comprehensive test suite achieving 80%+ code coverage. We follow the **Testing Pyramid** approach:
 
 - **60% Unit Tests** - Fast, isolated tests for individual functions and utilities
-- **30% Integration Tests** - Tests for component interactions and data flows
-- **10% E2E Tests** - Complete user journey validation
+- **40% Integration Tests** - Tests for component interactions and data flows
 
 ### Test Infrastructure
 
@@ -269,18 +267,11 @@ VaporScan follows industry-standard testing practices with a comprehensive test 
 │  ├─ Sitemap Parser: 40 tests (robots.txt, XML parsing)
 │  └─ Utilities: 64 tests (retry logic, formatters, helpers)
 │
-├─ Integration Tests: 117 tests created
-│  ├─ Crawler Workflows: 13/13 passing ✅
-│  ├─ State Management: 26 tests (Zustand + IndexedDB)
-│  ├─ Data Persistence: 25 tests (IndexedDB operations)
-│  └─ Component Interactions: 53 tests (forms, reports, UI)
-│
-└─ E2E Tests: Comprehensive Playwright test suite ✅
-   ├─ Critical Paths: 6 tests (happy path, quick audit, export)
-   ├─ URL Input & Validation: 12 tests (validation, edge cases, UX)
-   ├─ Keyboard Navigation: 14 tests (focus, ARIA, screen readers)
-   ├─ Cross-Browser: 11 tests (Chromium, Firefox, WebKit compatibility)
-   └─ Error Handling: 15 tests (network errors, invalid input, edge cases)
+└─ Integration Tests: 117 tests created
+   ├─ Crawler Workflows: 13/13 passing ✅
+   ├─ State Management: 26 tests (Zustand + IndexedDB)
+   ├─ Data Persistence: 25 tests (IndexedDB operations)
+   └─ Component Interactions: 53 tests (forms, reports, UI)
 ```
 
 ### Testing Commands
@@ -746,13 +737,6 @@ Runs on every push and pull request to `main` and `develop` branches:
 - ✅ Production build verification
 - ✅ Security audit (npm audit)
 
-**E2E Job** (Parallel shards for faster execution)
-
-- ✅ Playwright tests across 4 browsers (Chromium, Firefox, WebKit, Mobile Chrome)
-- ✅ 58 E2E tests covering critical paths, features, accessibility, and error scenarios
-- ✅ Test result artifacts and HTML reports
-- ✅ Screenshots and videos on failure
-
 **Security Job**
 
 - ✅ Trivy vulnerability scanning
@@ -824,12 +808,7 @@ Automated deployment to Cloudflare Pages:
 Our comprehensive test suite ensures reliability:
 
 ```
-        E2E Tests (10%)
-       /              \
-      /   58 tests     \
-     /    4 browsers    \
-    /____________________\
-   Integration Tests (30%)
+   Integration Tests (40%)
   /                      \
  /      117 tests         \
 /________________________  \
@@ -838,14 +817,14 @@ Our comprehensive test suite ensures reliability:
    all components
 ```
 
-**Total:** 319 tests across all levels
+**Total:** 261 tests across all levels
 **Coverage Target:** > 80% (tracked via Codecov)
 
 ### Quality Gates
 
 PRs must pass before merging:
 
-- ✅ All tests pass (unit, integration, E2E)
+- ✅ All tests pass (unit, integration)
 - ✅ No ESLint errors
 - ✅ Code formatted with Prettier
 - ✅ No TypeScript errors

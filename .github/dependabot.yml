@@ -1,15 +1,17 @@
+version: 2
 updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
       day: 'monday'
-      time: '03:00'
+      time: '12:30'
+      timezone: 'UTC'
     open-pull-requests-limit: 5
     reviewers:
-      - 'sanketmakhija'
+      - 'sanmak'
     assignees:
-      - 'sanketmakhija'
+      - 'sanmak'
     labels:
       - 'dependencies'
       - 'npm'
@@ -27,9 +29,10 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'monday'
-      time: '03:00'
+      time: '12:30'
+      timezone: 'UTC'
     reviewers:
-      - 'sanketmakhija'
+      - 'sanmak'
     labels:
       - 'ci/cd'
       - 'github-actions'
