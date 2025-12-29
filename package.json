@@ -1,6 +1,6 @@
 {
   "name": "vaporscan",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "An open-source, client-side SEO auditing tool that detects orphaned pages, broken links, and generates comprehensive site health reports.",
   "private": true,
   "scripts": {
