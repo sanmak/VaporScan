@@ -1,0 +1,75 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+yarn.lock
+
+# Testing
+/coverage
+/.nyc_output
+/dist
+
+# Next.js
+/.next
+/out
+.env.local
+.env.*.local
+.env.production.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# Build
+/build
+/dist
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Bundle analyzer
+.next/analyze
+
+# Misc
+.env
+.env.*.local
+!.env.example
+
+docs/internal*
+/.claude*
+
+# Modern JS/TS/Next.js/monorepo tools
+.turbo/
+.eslintcache
+.vercel/
+.npm/
+.cache/
+.envrc
+*.tsbuildinfo
+
+# Cloudflare Pages
+.wrangler/
+.dev.vars
+wrangler.toml.local
+.open-next/
+.cloudflare/
+worker-configuration.d.ts

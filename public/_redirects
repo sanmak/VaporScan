@@ -1,0 +1,9 @@
+# Cloudflare Pages Redirects Configuration
+# Handle client-side routing for SPA behavior
+# https://developers.cloudflare.com/pages/platform/redirects/
+
+# Redirect all report routes to the base report page for client-side handling
+/report/*  /report/[id]  200
+
+# Fallback for all other routes to index for client-side routing
+/*  /index.html  200

@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://vaporscan.pages.dev
+
+# Sitemaps
+Sitemap: https://vaporscan.pages.dev/sitemap.xml

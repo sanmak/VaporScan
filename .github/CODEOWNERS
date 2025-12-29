@@ -1,0 +1,11 @@
+# See https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+# Example:
+
+# \* @github-username1 @github-username2
+
+# /src/ @github-username1
+
+# /docs/ @github-username2
+
+-       @sanketmakhija

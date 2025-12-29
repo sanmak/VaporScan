@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 220 90% 56%;
+  --secondary: 270 95% 64%;
+  --destructive: 0 84% 60%;
+  --muted: 210 11% 71%;
+  --accent: 210 40% 96%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: 220 100% 54%;
+    --secondary: 270 100% 62%;
+    --destructive: 0 88% 64%;
+    --muted: 210 9% 31%;
+    --accent: 210 40% 10%;
+  }
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove default button styles */
+button {
+  font-family: inherit;
+}
+
+/* Prevent layout shift from scrollbars */
+html {
+  overflow-y: scroll;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

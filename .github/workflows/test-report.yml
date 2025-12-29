@@ -1,0 +1,78 @@
+name: Test Report
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results-24.x
+          path: test-results/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Download Playwright report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-1
+          path: playwright-report/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: test-results/**/*.xml
+          check_name: Test Results
+          comment_title: Test Results Summary
+          compare_to_earlier_commit: true
+
+      - name: Comment test summary
+        uses: actions/github-script@v7
+        if: github.event.workflow_run.event == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            let summary = '## 📊 Test Execution Summary\n\n';
+
+            // Check if test results exist
+            if (fs.existsSync('test-results')) {
+              summary += '### ✅ Tests Completed\n\n';
+              summary += '- Unit Tests: Executed\n';
+              summary += '- Integration Tests: Executed\n';
+              summary += '- E2E Tests: Executed\n\n';
+            } else {
+              summary += '### ⚠️ Test results not found\n\n';
+            }
+
+            // Check if Playwright report exists
+            if (fs.existsSync('playwright-report')) {
+              summary += '### 🎭 E2E Test Report Available\n';
+              summary += 'Playwright test report has been generated and uploaded as an artifact.\n\n';
+            }
+
+            summary += '---\n';
+            summary += `*View full details in the [workflow run](${context.payload.workflow_run.html_url})*`;
+
+            console.log(summary);
