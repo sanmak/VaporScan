@@ -195,8 +195,11 @@ export const useServiceWorker = (options: UseServiceWorkerOptions = {}) => {
 
     const registerServiceWorker = async () => {
       try {
-        // Register the service worker
-        const registration = await navigator.serviceWorker.register('/service-worker.js');
+        // Register the service worker with base path support
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+        const registration = await navigator.serviceWorker.register(
+          `${basePath}/service-worker.js`
+        );
         registrationRef.current = registration;
 
         if (!isMounted) return;
