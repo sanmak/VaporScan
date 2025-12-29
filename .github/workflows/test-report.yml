@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: test-results-24.x
           path: test-results/
@@ -28,7 +28,7 @@ jobs:
         continue-on-error: true
 
       - name: Download Playwright report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: playwright-report-1
           path: playwright-report/
