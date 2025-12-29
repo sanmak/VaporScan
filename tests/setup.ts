@@ -17,13 +17,18 @@ afterEach(() => {
 global.fetch = vi.fn();
 
 // Mock localStorage
+
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
+  key: vi.fn(),
+  get length() {
+    return 0;
+  },
 };
-global.localStorage = localStorageMock as Storage;
+global.localStorage = localStorageMock as unknown as Storage;
 
 // Mock DOMParser (since it's available in jsdom)
 // This is typically already available in jsdom environment
