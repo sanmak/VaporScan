@@ -18,8 +18,8 @@ const nextConfig = {
   compress: true,
   generateEtags: true,
   pageExtensions: ['ts', 'tsx'],
+  output: 'export',
 
-  // Disable image optimization for Cloudflare Pages
   images: {
     unoptimized: true,
   },
@@ -27,10 +27,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
   },
-  turbopack: {}, // Suppress Turbopack-Webpack conflict in Next.js 16
+  turbopack: {},
 
-  // Note: headers, rewrites, and redirects are not supported with output: 'export'
-  // These will be handled by Cloudflare Pages via _headers file
   /**
    * @param {any} config
    * @param {{ isServer: boolean }} context

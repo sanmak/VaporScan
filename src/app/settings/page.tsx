@@ -185,7 +185,7 @@ export default function SettingsPage() {
                         <TableRow
                           key={report.id}
                           className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/report/${report.id}`)}
+                          onClick={() => router.push(`/report?id=${report.id}`)}
                         >
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  router.push(`/report/${report.id}`);
+                                  router.push(`/report?id=${report.id}`);
                                 }}
                               >
                                 <ExternalLink className="w-4 h-4" />

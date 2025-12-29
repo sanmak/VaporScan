@@ -65,11 +65,3 @@ docs/internal*
 .cache/
 .envrc
 *.tsbuildinfo
-
-# Cloudflare Pages
-.wrangler/
-.dev.vars
-wrangler.toml.local
-.open-next/
-.cloudflare/
-worker-configuration.d.ts

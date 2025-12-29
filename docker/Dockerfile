@@ -5,7 +5,6 @@ FROM node:24-alpine AS builder
 WORKDIR /app
 
 # Set build-time environment
-# We don't set NODE_ENV=production here to ensure devDependencies are installed correctly for the build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV ADAPTER_SKIP_PREPARE=1
 ENV HUSKY=0
@@ -23,45 +22,38 @@ RUN npm install --no-audit --no-fund --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application (static export)
 RUN npm run build
 
-# Stage 2: Runtime
-FROM node:24-alpine AS runner
-
-WORKDIR /app
-
-# Set production environment
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+# Stage 2: Runtime with Nginx
+FROM nginx:alpine AS runner
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
 
-# Copy only necessary files from builder
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/next.config.js ./
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001 && \
-    chown -R nextjs:nodejs /app
+# Copy static files from builder
+COPY --from=builder /app/out /usr/share/nginx/html
 
-# Switch to non-root user
-USER nextjs
+# Set proper permissions for Nginx directories
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    chown -R nginx:nginx /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx:nginx /var/run/nginx.pid
 
 # Expose port
-EXPOSE 3000
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 
 # Use dumb-init
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the application
-CMD ["node_modules/.bin/next", "start"]
+# Start nginx as root (required for binding to ports)
+CMD ["nginx", "-g", "daemon off;"]

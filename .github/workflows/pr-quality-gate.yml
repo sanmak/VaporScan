@@ -189,7 +189,7 @@ jobs:
         run: |
           echo "## 📦 Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          du -sh .next/ >> $GITHUB_STEP_SUMMARY
+          du -sh out/ >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Largest Files:" >> $GITHUB_STEP_SUMMARY
-          find .next/static -type f -exec du -h {} + | sort -rh | head -10 >> $GITHUB_STEP_SUMMARY
+          find out/_next/static -type f -exec du -h {} + | sort -rh | head -10 >> $GITHUB_STEP_SUMMARY

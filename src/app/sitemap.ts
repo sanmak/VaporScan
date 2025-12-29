@@ -6,10 +6,12 @@
 import { MetadataRoute } from 'next';
 import { config } from '@/config';
 
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = config.app.url;
 
-  const routes = ['', '/scan', '/report', '/settings'].map((route) => ({
+  const routes = ['', '/scan', '/settings'].map((route) => ({
     url: `${siteUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,

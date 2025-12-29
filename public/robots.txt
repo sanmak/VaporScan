@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://vaporscan.pages.dev
+Host: https://sanmak.github.io/VaporScan
 
 # Sitemaps
-Sitemap: https://vaporscan.pages.dev/sitemap.xml
+Sitemap: https://sanmak.github.io/VaporScan/sitemap.xml

@@ -6,6 +6,8 @@
 import { MetadataRoute } from 'next';
 import { config } from '@/config';
 
+export const dynamic = 'force-static';
+
 export default function robots(): MetadataRoute.Robots {
   const siteUrl = config.app.url;
   const isAdvancedSEO = config.app.isAdvancedSEO;

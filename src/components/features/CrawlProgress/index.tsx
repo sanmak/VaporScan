@@ -134,7 +134,7 @@ export const CrawlProgress = ({ initialUrl, manualPages = [] }: CrawlProgressPro
         await saveCrawl(crawlResult);
         await saveReport(report);
 
-        router.push(`/report/${report.id}`);
+        router.push(`/report?id=${report.id}`);
       } catch (error) {
         console.error('Error generating report:', error);
       }

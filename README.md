@@ -130,8 +130,8 @@ Visit `http://localhost:3000` to access the application.
 ```bash
 # Development
 npm run dev              # Start dev server with hot reload
-npm run build            # Build for production
-npm start                # Start production server
+npm run build            # Build for production (static export to out/)
+npm start                # Serve production build locally
 
 # Linting & Formatting
 npm run lint             # Run ESLint
@@ -583,7 +583,8 @@ After running `npm run test:coverage`, open `coverage/index.html` to view:
 
 - IndexedDB (client storage)
 - Service Worker, PWA
-- Docker & Docker Compose (multi-stage builds, dev & prod)
+- Static Export (Next.js)
+- Docker & Nginx (multi-stage builds, dev & prod)
 - GitHub Actions (CI/CD, security, coverage)
 
 **Other**
@@ -593,62 +594,67 @@ After running `npm run test:coverage`, open `coverage/index.html` to view:
 
 ## 🌐 Deployment
 
-### Cloudflare Pages (Recommended)
+VaporScan uses **Next.js Static Export** to generate a fully static website that can be deployed anywhere - no server required! The build output is a collection of HTML, CSS, and JavaScript files that can be served from any static hosting provider or CDN.
 
-VaporScan is optimized for deployment on Cloudflare Pages with automatic CI/CD via GitHub Actions.
+### Static Hosting Platforms
 
-**Prerequisites:**
-
-- Cloudflare account
-- GitHub repository connected to Cloudflare Pages
-
-**Quick Deploy:**
-
-1. **Via GitHub Actions (Automated)**:
-   - Push to `main` branch triggers automatic deployment
-   - Pull requests get preview deployments
-   - Set required secrets in GitHub repository settings:
-     - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
-     - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
-
-2. **Manual Deploy**:
+#### Vercel (Recommended)
 
 ```bash
-# Build for Cloudflare
-npm run build
-npm run pages:build
+# Install Vercel CLI
+npm i -g vercel
 
-# Deploy to Cloudflare Pages
-npm run pages:deploy
-```
-
-3. **Local Development/Preview**:
-
-```bash
-# Build and preview locally with Wrangler
-npm run pages:build
-npm run preview
-```
-
-**Configuration Files:**
-
-- [wrangler.toml](wrangler.toml) - Cloudflare Pages configuration
-- [open-next.config.ts](open-next.config.ts) - OpenNext adapter configuration
-- [.github/workflows/cloudflare-pages.yml](.github/workflows/cloudflare-pages.yml) - CI/CD workflow
-
-For detailed instructions, see [Cloudflare Pages Deployment Guide](./docs/deployment-cloudflare.md).
-
-### Vercel
-
-```bash
+# Deploy
 vercel
 ```
 
-### Netlify
+#### Netlify
 
 ```bash
-netlify deploy
+# Install Netlify CLI
+npm i -g netlify-cli
+
+# Deploy
+netlify deploy --prod
 ```
+
+#### GitHub Pages
+
+**Automatic Deployment (Recommended):**
+
+The repository includes a GitHub Actions workflow that automatically deploys to GitHub Pages on every push to `main`:
+
+1. Enable GitHub Pages in your repository settings:
+   - Go to Settings → Pages
+   - Source: Select "GitHub Actions"
+2. Push to `main` branch - deployment happens automatically
+3. Visit `https://<username>.github.io/VaporScan`
+
+**Manual Deployment:**
+
+```bash
+# Build the application
+npm run build
+
+# Install GitHub Pages CLI
+npm i -g gh-pages
+
+# Deploy the 'out' folder to GitHub Pages
+gh-pages -d out
+```
+
+#### Any Static Host
+
+After running `npm run build`, deploy the `out/` directory to any static hosting provider:
+
+- AWS S3 + CloudFront
+- Google Cloud Storage
+- Azure Static Web Apps
+- DigitalOcean App Platform
+- Render
+- Railway
+- Surge
+- Firebase Hosting
 
 ### 🐳 Docker & Docker Compose
 
@@ -663,17 +669,15 @@ VaporScan provides official Docker images published to GitHub Container Registry
 docker pull ghcr.io/sanmak/vaporscan:latest
 
 # Run the container
-docker run -p 3000:3000 ghcr.io/sanmak/vaporscan:latest
+docker run -p 8080:8080 ghcr.io/sanmak/vaporscan:latest
 ```
+
+Visit `http://localhost:8080` to access the application.
 
 **Available tags:**
 
 ```bash
 ghcr.io/sanmak/vaporscan:latest          # Latest stable release
-ghcr.io/sanmak/vaporscan:v1.2.3          # Specific version
-ghcr.io/sanmak/vaporscan:1.2             # Major.minor version
-ghcr.io/sanmak/vaporscan:1               # Major version
-ghcr.io/sanmak/vaporscan:sha-abc123      # Specific commit SHA
 ```
 
 **Docker images are automatically built and published when a GitHub release is created.**
@@ -685,8 +689,10 @@ ghcr.io/sanmak/vaporscan:sha-abc123      # Specific commit SHA
 ```bash
 # Build and run production image
 docker build -f docker/Dockerfile -t vaporscan .
-docker run -p 3000:3000 vaporscan
+docker run -p 8080:8080 vaporscan
 ```
+
+Visit `http://localhost:8080` to access the application.
 
 **Development (Hot Reload):**
 
@@ -711,11 +717,19 @@ docker compose -f docker/docker-compose.yml build
 docker compose -f docker/docker-compose.yml logs -f
 ```
 
+**Production Architecture:**
+
+The production Docker image uses a multi-stage build:
+
+- **Stage 1 (Builder)**: Compiles the Next.js application and generates static export
+- **Stage 2 (Runtime)**: Serves static files using Nginx with optimized caching and security headers
+
 **Notes:**
 
-- The `dev` service mounts your local code for instant feedback and enables hot reload.
-- The `app` service is optimized for production and uses a multi-stage build for minimal image size and security.
-- Environment variables can be set in a `.env.local` file or passed at runtime.
+- The `dev` service mounts your local code for instant feedback and enables hot reload (port 3000)
+- The `app` service is optimized for production with Nginx serving static files (port 8080)
+- Production image includes security headers, gzip compression, and optimized caching
+- Environment variables can be set in a `.env.local` file or passed at runtime
 - Published Docker images are available at [GitHub Container Registry](https://github.com/sanmak/VaporScan/pkgs/container/vaporscan)
 
 ## 🔄 CI/CD Pipeline
@@ -744,7 +758,8 @@ Runs on every push and pull request to `main` and `develop` branches:
 
 **Build Job**
 
-- ✅ Final production build
+- ✅ Final production build (static export)
+- ✅ Build artifacts uploaded (out/ directory)
 - ✅ Artifact retention for 5 days
 
 #### 2. **PR Quality Gate** (`.github/workflows/pr-quality-gate.yml`)
@@ -792,16 +807,14 @@ Automated Docker image publishing on GitHub releases:
 - 📦 GitHub Container Registry (ghcr.io)
 - 🚀 Automated on release publish
 
-#### 5. **Cloudflare Pages Deployment** (`.github/workflows/cloudflare-pages.yml`)
+#### 5. **GitHub Pages Deployment** (`.github/workflows/github-pages.yml`)
 
-Automated deployment to Cloudflare Pages:
+Automated deployment to GitHub Pages:
 
-- 🚀 Automatic deployment on push to `main` branch
-- 🔍 Preview deployments for pull requests
-- ✅ Type checking, linting, and build verification before deployment
-- 💬 Automated PR comments with preview URLs
-- 🌍 Global CDN distribution via Cloudflare
-- ⚡ Edge runtime performance
+- 🌐 Automatic deployment on push to `main` branch
+- 📦 Static export optimized for GitHub Pages
+- 🔄 Manual deployment trigger available
+- 🚀 Live at `https://<username>.github.io/VaporScan`
 
 ### Test Coverage
 
@@ -831,6 +844,25 @@ PRs must pass before merging:
 - ✅ Production build succeeds
 - ✅ No critical security vulnerabilities
 - ✅ Coverage maintained or improved
+
+### Build Output
+
+The build process generates a static export in the `out/` directory:
+
+```
+out/
+├── _next/
+│   └── static/          # Static assets (JS, CSS, fonts)
+├── index.html           # Home page
+├── scan.html            # Scan page
+├── settings.html        # Settings page
+├── report.html          # Report page
+├── robots.txt           # Robots.txt
+├── sitemap.xml          # Sitemap
+└── manifest.webmanifest # PWA manifest
+```
+
+**Bundle Size:** ~3.0MB total (optimized with code splitting and compression)
 
 ### Continuous Deployment
 
